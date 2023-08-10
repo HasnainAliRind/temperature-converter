@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temperature Converter</title>
+    <link rel="stylesheet" href="Style.css">
+</head>
+
+<body>
+    <div class="Converter_UI">
+        <h2>Convert <span>Temperature</span></h2>
+        <div class="fields">
+            <div class="field">
+                <input type="number" id="value" value="1" placeholder="Enter Value">
+                <select id="firstValue">
+                    <option value="°C">Celcius</option>
+                    <option value="°F">Fahrenhiet</option>
+                    <option value="K">Kelvin</option>
+                </select>
+            </div>
+            <div class="secondOne">
+                <h2>To</h2>
+                <select id="secondOne">
+                    <option value="°F">Fahrenhiet</option>
+                    <option value="K">Kelvin</option>
+                    <option value="°C">Celcius</option>
+                </select>
+            </div>
+            <div class="btn">
+                <button onclick="covertTemperature()">Convert</button>
+            </div>
+        </div>
+        <div id="Answer">
+            <div id="number"><span id="to">1°C</span> is <span style="font-style: italic;">equals</span> to</div>
+            <div id="converted">33.8°F</div>
+        </div>
+    </div>
+
+    <script>
+        let firstValue = document.getElementById("firstValue");
+        let secondOne = document.getElementById("secondOne");
+        let value = document.getElementById('value');
+
+        let from = "°C";
+        let to = "°F";
+        let number = "1"
+
+
+        firstValue.addEventListener("change",(value)=>{
+            from = value.target.value;
+        })
+        secondOne.addEventListener("change" , (value)=>{
+            to = value.target.value;
+        })
+        value.addEventListener("change",(field)=>{
+            number = field.target.value
+        })
+
+       
+        function covertTemperature() {
+            let pairMatrix = [
+                [
+                    "°C","°F", {
+                        operation: ()=>{
+                        let finalValue = parseFloat(number) * 9/5 + 32
+                        return `${number}${from} is equals to ${finalValue.toString().length < 9 ? finalValue :finalValue.toFixed(4)}${to}`
+                    }}
+                ],
+                [
+                    "°F","°C", {
+                        operation: ()=>{
+                            let finalValue = (parseFloat(number)-32) * 5/9
+                        return `${number}${from} is equals to ${finalValue.toString().length < 9 ? finalValue :finalValue.toFixed(4)}${to}`
+                    }}
+                ],
+                [
+                    "°C","K", {
+                        operation: ()=>{
+                        let finalValue = parseFloat(number)+273.15
+                        return `${number}${from} is equals to ${finalValue.toString().length < 9 ? finalValue :finalValue.toFixed(4)}${to}`
+                    }} 
+                ],
+                [
+                    "K","°C", {
+                        operation: ()=>{
+                        let finalValue = parseFloat(number) - 273.15
+                        return `${number}${from} is equals to ${finalValue.toString().length < 9 ? finalValue :finalValue.toFixed(4)}${to}`
+                    }} 
+                ],
+                [
+                    "K","°F", {
+                        operation: ()=>{
+                        let convertToCelcius = (parseInt(number) - 273.15) * 9/5 + 32;
+                        console.log(convertToCelcius);
+                        return `${number}${from} is equals to ${convertToCelcius.toString().length < 9 ? convertToCelcius : convertToCelcius.toFixed(4)}${to}`
+                    }} 
+                ],
+                [
+                    "°F","K",{
+                        operation: ()=>{
+                        
+                        let Celcius = (parseFloat(number)-32) * 5/9 + 273.15
+                        
+                       return `${number}${from} is equals to ${(Celcius.toString().length < 9 ? Celcius : Celcius.toFixed(4))}${to}`
+                    }}
+                ],
+                
+            ]
+            if (value !== "0") {
+                let value = document.getElementById("value").value;
+                for (const operation in pairMatrix) {
+                    if(pairMatrix[operation][0] == from && to == pairMatrix[operation][1]){
+                        console.log(`operation matched coverting ${from} to ${to}`);
+                        let response = pairMatrix[operation][2].operation();
+                      
+                        let indexOfAnswer = `${response}`.lastIndexOf("to") + 3;
+                        let answer = `${response}`.slice(indexOfAnswer,);
+                        document.getElementById("converted").innerText = answer
+
+                        let indexOfQuestion = `${response}`.lastIndexOf("is") - 1;
+                        let question = `${response}`.slice(0,indexOfQuestion)
+                        document.getElementById("to").innerText = question
+
+                    }else{
+                        if (from == to) {
+                            alert(`please change the operation, Can't convert ${from} to ${to}`)
+                        }
+                    }
+                }
+            }else{
+                alert("Please define a value!")
+              
+            }
+        }
+    </script>
+</body>
+
+</html>
